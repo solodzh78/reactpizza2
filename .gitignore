@@ -24,3 +24,6 @@ yarn-error.log*
 
 # template
 /react-pizza-html-master
+
+# mockapi url
+/src/assets/url.js
