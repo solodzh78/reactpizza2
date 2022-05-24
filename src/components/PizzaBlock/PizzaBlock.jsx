@@ -11,6 +11,8 @@ export const PizzaBlock = (props) => {
                 className="pizza-block__image"
                 src={imageUrl}
                 alt="Pizza"
+                width={260}
+                height={260}
             />
             <h4 className="pizza-block__title">{title}</h4>
             <div className="pizza-block__selector">
