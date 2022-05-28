@@ -1,19 +1,42 @@
 import { useState } from 'react';
 
-const sortList = ['популярности', 'цене', 'алфавиту'];
+const sortList = [
+    {
+        title: 'популярности DESC',
+        sortParameter: '-rating'
+    }, 
+    {
+        title: 'популярности ASC',
+        sortParameter: 'rating'
+    }, 
+    {
+        title: 'цене DESC',
+        sortParameter: '-price'
+    }, 
+    {
+        title: 'цене ASC',
+        sortParameter: 'price'
+    }, 
+    {
+        title: 'алфавиту DESC',
+        sortParameter: '-title'
+    },
+    {
+        title: 'алфавиту ASC',
+        sortParameter: 'title'
+    }];
 
-export const Sort = () => {
+export const Sort = ({ activeSortItem, setActiveSortItem }) => {
     const [open, setOpen] = useState(false);
-    const [activeSortItem, setActiveSortItem] = useState(0);
     const sortItemClickHandler = (index) => {
-        setActiveSortItem(index);
+        setActiveSortItem(sortList[index]);
         setOpen(false);
     };
 
     return (
         <div className="sort">
             <div className="sort__label">
-                <b>Сортировка по:</b>
+                <b>Сортировка&nbsp;по:</b>
                 <span onClick={setOpen.bind(null, !open)}>
                     <svg
                         className={open ? 'active' : ''}
@@ -27,21 +50,21 @@ export const Sort = () => {
                             fill="#2C2C2C"
                         />
                     </svg>
-                    {sortList[activeSortItem]}
+                    {activeSortItem.title}
                 </span>
             </div>
 
             {open && (
                 <div className="sort__popup">
                     <ul>
-                        {sortList.map((value, index) => {
-                            const className = index === activeSortItem ? 'active' : '';
+                        {sortList.map(({title, sortParameter}, index) => {
+                            const className = sortParameter === activeSortItem.sortParameter ? 'active' : '';
                             return (
                                 <li
                                     className={className}
-                                    key={value}
+                                    key={index}
                                     onClick={sortItemClickHandler.bind(null, index)}>
-                                    {value}
+                                    {title}
                                 </li>
                             );
                         })}

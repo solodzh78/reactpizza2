@@ -8,8 +8,7 @@ const categories = [
 	'Острые',
 	'Закрытые'
 ]
-export const Categories = () => {
-	const [activeCategory, setActiveCategory] = useState(0);
+export const Categories = ({ activeCategory, setActiveCategory }) => {
     return (
         <div className="categories">
             <ul>
