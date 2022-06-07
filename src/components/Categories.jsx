@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { setActiveCategoryId} from '../redux/slices/filterSlice';
 
 const categories = [
 	'Все',
@@ -8,7 +10,9 @@ const categories = [
 	'Острые',
 	'Закрытые'
 ]
-export const Categories = ({ activeCategory, setActiveCategory }) => {
+export const Categories = () => {
+	const dispatch = useDispatch();
+	const activeCategory = useSelector(state => state.filter.activeCategoryId);
     return (
         <div className="categories">
             <ul>
@@ -18,7 +22,7 @@ export const Categories = ({ activeCategory, setActiveCategory }) => {
 						<li 
 							className={className}
 							key={value} 
-							onClick={setActiveCategory.bind(null, index)}
+							onClick={() => dispatch(setActiveCategoryId(index))}
 						>
 							{value}
 						</li>

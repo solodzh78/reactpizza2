@@ -1,0 +1,28 @@
+.root {
+    box-sizing: border-box;
+}
+.list {
+    display: flex;
+
+}
+.list-item {
+    box-sizing: border-box;
+    padding: 5px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    &:first-child {
+        border-radius: 5px 0 0 5px;
+    }
+    &:last-child {
+        border-radius: 0 5px 5px 0;
+    }
+    &:hover {
+        border: 3px solid rgba(#fe5f1e, 0.8);
+        padding: 3px 13px;
+    }
+    &.active {
+        background-color: #fe5f1e;
+        color: #fff;
+    }
+
+}

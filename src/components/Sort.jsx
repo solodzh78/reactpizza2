@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setActiveSortItem } from '../redux/slices/filterSlice';
 
 const sortList = [
     {
@@ -26,10 +29,14 @@ const sortList = [
         sortParameter: 'title'
     }];
 
-export const Sort = ({ activeSortItem, setActiveSortItem }) => {
+export const Sort = () => {
+
+    const activeSortItem = useSelector(state => state.filter.activeSortItem);
+    const dispatch = useDispatch();
+
     const [open, setOpen] = useState(false);
     const sortItemClickHandler = (index) => {
-        setActiveSortItem(sortList[index]);
+        dispatch(setActiveSortItem(sortList[index]));
         setOpen(false);
     };
 
