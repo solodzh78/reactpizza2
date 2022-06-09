@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 
@@ -8,8 +8,8 @@ import { Categories } from '../../components/Categories';
 import { PizzaBlock } from '../../components/PizzaBlock';
 import { Sort } from '../../components/Sort';
 import { Pagination } from '../../components/Pagination';
-import { setActivePage } from '../../redux/slices/paginationSlice';
 import { setItems } from '../../redux/slices/itemsSlice';
+import { setIsLoading } from '../../redux/slices/filterSlice';
 
 // import styled from './Home.module.scss';
 
@@ -18,14 +18,12 @@ function Home() {
 
     const itemsPerPage = 3;
 
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
     
     const dispatch = useDispatch();
     
     const { items } = useSelector(state => state.items);
-    const { activeCategoryId, activeSortItem } = useSelector(state => state.filter);
-    const {activePage} = useSelector(state => state.pagination);
-    const {searchValue} = useSelector(state => state.search);
+    const { activeCategoryId, activeSortItem, activePage, searchValue, isLoading } = useSelector(state => state.filter);
     
     useEffect(() => {
         const searchParam = (!!activeCategoryId ? `?category=${activeCategoryId}` : '?');
@@ -36,8 +34,8 @@ function Home() {
             .get(URL + searchParam + sortBy + order + search)
             .then(({data}) => {
                 dispatch(setItems(data));
-                dispatch(setActivePage(0));
-                setIsLoading(false);
+                dispatch(setIsLoading(false));
+                window.scrollTo(0, 0);
             });
     }, [activeCategoryId, activeSortItem, searchValue]);
     
@@ -59,10 +57,9 @@ function Home() {
                         .filter((item, index) => 
                             index >= activePage * itemsPerPage && index < (activePage + 1) * itemsPerPage)
                         .map((pizza) => 
-                            <PizzaBlock 
-                                key={pizza.id} 
-                                {...pizza} 
-                            />)}
+                            <PizzaBlock key={pizza.id} {...pizza} />
+                        )
+                }
             </div>
             <Pagination 
                 pages={pages}

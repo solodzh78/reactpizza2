@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { setActiveSortItem } from '../redux/slices/filterSlice';
 
-const sortList = [
+export const sortList = [
     {
         title: 'популярности DESC',
         sortParameter: '-rating'
