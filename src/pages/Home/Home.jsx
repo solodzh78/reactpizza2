@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
@@ -7,12 +8,13 @@ import { Categories } from '../../components/Categories';
 import { PizzaBlock } from '../../components/PizzaBlock';
 import { Sort } from '../../components/Sort';
 import { Pagination } from '../../components/Pagination';
-
-import styled from './Home.module.scss';
 import { setActivePage } from '../../redux/slices/paginationSlice';
 import { setItems } from '../../redux/slices/itemsSlice';
 
+// import styled from './Home.module.scss';
+
 function Home() {
+    console.log('render Home');
 
     const itemsPerPage = 3;
 
@@ -22,25 +24,25 @@ function Home() {
     
     const { items } = useSelector(state => state.items);
     const { activeCategoryId, activeSortItem } = useSelector(state => state.filter);
-    const currentPage = useSelector(state => state.pagination.activePage);
-    const searchValue = useSelector(state => state.search.searchValue);
-        
+    const {activePage} = useSelector(state => state.pagination);
+    const {searchValue} = useSelector(state => state.search);
+    
     useEffect(() => {
         const searchParam = (!!activeCategoryId ? `?category=${activeCategoryId}` : '?');
         const sortBy = `&sortBy=${activeSortItem.sortParameter.replace('-', '')}`;
         const order = `&order=${activeSortItem.sortParameter.includes('-') ? 'desc' : 'asc'}`;
         const search = `&search=${searchValue ? searchValue : ''}`;
-        fetch(URL + searchParam + sortBy + order + search)
-        .then((res) => res.json())
-        .then((arr) => {
-            dispatch(setItems(arr));
-            dispatch(setActivePage(0));
-            setIsLoading(false);
-        });
+        axios
+            .get(URL + searchParam + sortBy + order + search)
+            .then(({data}) => {
+                dispatch(setItems(data));
+                dispatch(setActivePage(0));
+                setIsLoading(false);
+            });
     }, [activeCategoryId, activeSortItem, searchValue]);
     
     const pages = Math.ceil(items.length / itemsPerPage);
-        
+
     return (
         <>
             <div className="content__top">
@@ -54,11 +56,8 @@ function Home() {
                         <PizzaSceleton key={index} className="pizza-block" />
                     ))
                     : items
-                        // .filter(({title}) => title
-                        //                         .toLowerCase()
-                        //                         .includes(searchValue.toLowerCase()))
                         .filter((item, index) => 
-                            index >= currentPage * itemsPerPage && index < (currentPage + 1) * itemsPerPage)
+                            index >= activePage * itemsPerPage && index < (activePage + 1) * itemsPerPage)
                         .map((pizza) => 
                             <PizzaBlock 
                                 key={pizza.id} 

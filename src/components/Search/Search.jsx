@@ -1,13 +1,21 @@
-import { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styles from './Search.module.scss';
 import { setSearchValue } from '../../redux/slices/searchSlice';
+import debounce from 'lodash.debounce';
 
 function Search() {
-    const searchValue = useSelector(state => state.earch)
+
+    const [localSearchValue, setLocalSearchValue] = useState('');
     const dispatch = useDispatch();
     const refInput = useRef(null);
+    const debonceChangeInputValue = useCallback(debounce((str) => dispatch(setSearchValue(str)), 1000), []);
+
+    const onChangeHandler = event =>  {  
+        setLocalSearchValue(event.target.value);
+        debonceChangeInputValue(localSearchValue)
+        };
     return (
         <div className={styles.root}>
             <svg
@@ -24,9 +32,9 @@ function Search() {
                 className={styles.input} 
                 ref={refInput}
                 placeholder='Поиск пиццы ...' 
-                value={searchValue} 
-                onChange={event => dispatch(setSearchValue(event.target.value))} />
-            {searchValue && 
+                value={localSearchValue}
+                onChange={onChangeHandler} />
+            {localSearchValue && 
             <svg 
                 className={styles.clear} 
                 height="48" 
@@ -35,6 +43,7 @@ function Search() {
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={() => {
                     dispatch(setSearchValue(''));
+                    setLocalSearchValue('');
                     refInput.current.focus();
                 }}
             >
