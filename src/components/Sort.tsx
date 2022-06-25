@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setActiveSortItem } from '../redux/slices/filterSlice';
@@ -29,28 +29,26 @@ export const sortList = [
         sortParameter: 'title'
     }];
 
-export const Sort = () => {
+	export const Sort: FC = () => {
 
     const sortRef = useRef(null);
-    const {activeSortItem} = useSelector(state => state.filter);
+    const {activeSortItem} = useSelector((state: any) => state.filter);
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const onClickClose = (event) => {
-            console.log('event: ', event);
+        const onClickClose = (event: any) => {
             if (!event.target.closest('.sort')) setOpen(false)
         };
         if (open) document.body.addEventListener('click', onClickClose) 
         // else document.body.removeEventListener('click', onClickClose)
         return () => {
-            console.log('unmount Sort');
             document.body.removeEventListener('click', onClickClose)
         };
     }, [open]);
 
-    const sortItemClickHandler = (index) => {
+    const sortItemClickHandler = (index: number) => {
         dispatch(setActiveSortItem(sortList[index]));
         setOpen(false);
     };

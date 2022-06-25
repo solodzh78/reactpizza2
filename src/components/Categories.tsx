@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setActiveCategoryId} from '../redux/slices/filterSlice';
@@ -10,9 +11,9 @@ const categories = [
 	'Острые',
 	'Закрытые'
 ]
-export const Categories = () => {
+export const Categories: FC = () => {
 	const dispatch = useDispatch();
-	const activeCategory = useSelector(state => state.filter.activeCategoryId);
+	const activeCategory = useSelector((state: any) => state.filter.activeCategoryId);
     return (
         <div className="categories">
             <ul>

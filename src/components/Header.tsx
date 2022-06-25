@@ -1,11 +1,12 @@
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import pizzaLogo from '../assets/img/pizza-logo.svg'; 
 import { Search } from './Search';
 
-export const Header = () => {
-    const { totalPrice, totalCount} = useSelector(state => state.cart);
+export const Header: FC = () => {
+    const { totalPrice, totalCount} = useSelector((state: any) => state.cart);
     return (
         <div className="header">
             <div className="container">

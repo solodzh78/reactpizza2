@@ -1,15 +1,15 @@
+import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setActivePage } from '../../redux/slices/filterSlice';
 
 import styles from './Pagination.module.scss';
 
-export const Pagination = ({ pages }) => {
+export const Pagination: FC<{pages: number}> = ({ pages }) => {
 
-    const activePage = useSelector(state => state.filter.activePage);
+    const activePage = useSelector((state: any) => state.filter.activePage);
     const dispatch = useDispatch();
-    
-    const pagesArray = [...Array(pages).keys()];
+    const pagesArray = Array.from(Array(pages).keys());
     return (
         <div className={styles.root}>
             <ul className={styles.list}>

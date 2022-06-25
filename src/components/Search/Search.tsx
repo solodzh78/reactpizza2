@@ -9,10 +9,10 @@ function Search() {
 
     const [localSearchValue, setLocalSearchValue] = useState('');
     const dispatch = useDispatch();
-    const refInput = useRef(null);
-    const debonceChangeInputValue = useCallback(debounce((str) => dispatch(setSearchValue(str)), 1000), []);
+    const refInput = useRef<HTMLInputElement>(null);
+    const debonceChangeInputValue = useCallback(debounce((str: string) => dispatch(setSearchValue(str)), 1000), []);
 
-    const onChangeHandler = event =>  {  
+    const onChangeHandler = (event: any) =>  {  
         setLocalSearchValue(event.target.value);
         debonceChangeInputValue(localSearchValue)
         };
@@ -44,7 +44,7 @@ function Search() {
                 onClick={() => {
                     dispatch(setSearchValue(''));
                     setLocalSearchValue('');
-                    refInput.current.focus();
+                    refInput.current?.focus();
                 }}
             >
                 <path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/>

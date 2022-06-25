@@ -1,7 +1,9 @@
+import { FC } from 'react';
+
 import styles from './NotFound.module.scss';
 import notFindImage from '../../assets/img/ss.webp';
 
-function NotFound() {
+const NotFound: FC = () => {
     return (
         <>
             <div className={styles.root}>

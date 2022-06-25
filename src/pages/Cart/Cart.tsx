@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -7,8 +8,8 @@ import { clearCart } from '../../redux/slices/cartSlice';
 
 import styles from './Cart.module.scss';
 
-function Cart() {
-    const { cartItems, totalPrice, totalCount } = useSelector(state => state.cart);
+const Cart: FC = () => {
+    const { cartItems, totalPrice, totalCount } = useSelector((state: any) => state.cart);
     const isEmpty = cartItems.length === 0;
     const dispatch = useDispatch();
     const onClearCart = () => dispatch(clearCart());
@@ -18,7 +19,7 @@ function Cart() {
                 ?   <div className={styles.root}>
                         <div className="cart cart--empty">
                             <h2>
-                                Корзина пустая <icon>😕</icon>
+                                Корзина пустая <span>😕</span>
                             </h2>
                             <p>
                                 Вероятней всего, вы не заказывали ещё пиццу.
@@ -53,7 +54,7 @@ function Cart() {
                             </div>
                         </div>
                         <div className={styles.content__items}>
-                            {cartItems.map(item => <CartItem key={item.uid} {...item}/>)}
+                            {cartItems.map((item: any) => <CartItem key={item.uid} {...item}/>)}
                         </div>
                         <div className="cart__bottom">
                             <div className="cart__bottom-details">

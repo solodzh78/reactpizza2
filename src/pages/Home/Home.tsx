@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
@@ -13,33 +13,33 @@ import { setFilters } from '../../redux/slices/filterSlice';
 
 // import styled from './Home.module.scss';
 
-function Home() {
+const Home: FC = () => {
     console.log('render Home');
 
     const itemsPerPage = 3;
     const dispatch = useDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const { items, status } = useSelector(state => state.items);
+    const { items, status } = useSelector((state: any) => state.items);
     const { 
         activeCategoryId, 
         activeSortItem, 
         activePage, 
-        searchValue } = useSelector(state => state.filter);
+        searchValue } = useSelector((state: any) => state.filter);
 
     const isSearch = useRef(false);
     const isFirstRender = useRef(true);
 
-    const sortToObj = str => {
+    const sortToObj = (str: string) => {
         return sortList.find(elem => elem.sortParameter === str) || sortList[0]
     };
 
     useEffect(() => {
         if (isFirstRender.current && searchParams.toString()) {
             const filters = {
-                sort: sortToObj(searchParams.get('sort')),
+                sort: sortToObj(String(searchParams.get('sort'))),
                 categoryId: Number(searchParams.get('categoryId')),
-                search: searchParams.get('search'),
+                search: String(searchParams.get('search')),
                 page: Number(searchParams.get('page')),
             };
             dispatch(setFilters(filters));
@@ -54,6 +54,7 @@ function Home() {
             const sortBy = `&sortBy=${activeSortItem.sortParameter.replace('-', '')}`;
             const order = `&order=${activeSortItem.sortParameter.includes('-') ? 'desc' : 'asc'}`;
             const search = `&search=${searchValue ? searchValue : ''}`;
+			// @ts-ignore
             dispatch(fetchItems(URL + searchParam + sortBy + order + search));
             window.scrollTo(0, 0);
         }
@@ -70,7 +71,7 @@ function Home() {
         }
         isSearch.current = false;
         isFirstRender.current = false;
-    }, [activeCategoryId, activeSortItem.sortParameter, searchValue, activePage]);
+    }, [activeCategoryId, activeSortItem.sortParameter, searchValue, activePage, setSearchParams]);
 
     const pages = Math.ceil(items.length / itemsPerPage);
 
@@ -88,10 +89,12 @@ function Home() {
                     ))
                     : status === 'success' 
                         ? items
-                            .filter((item, index) => 
+                            .filter((item: any, index: number) => 
                                 index >= activePage * itemsPerPage && index < (activePage + 1) * itemsPerPage)
-                            .map((pizza) => 
-                                <PizzaBlock key={pizza.id} {...pizza} />
+                            .map((pizza: any) => 
+                                <Link key={pizza.id} to={`/pizza/${pizza.id}`}>
+									<PizzaBlock {...pizza} />
+								</Link>
                             )
                         : <h2>Ошибка загрузки с сервера</h2>
                 }

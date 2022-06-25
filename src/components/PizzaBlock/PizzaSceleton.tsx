@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Attributes, FC, HTMLAttributes, PropsWithChildren } from 'react';
 import ContentLoader from 'react-content-loader';
 
-export const PizzaSceleton = (props) => (
+export const PizzaSceleton: FC<{className?: string}> = (props) => (
     <ContentLoader
         speed={5}
         width={280}

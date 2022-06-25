@@ -1,1 +1,0 @@
-export { PizzaBlock } from './PizzaBlock.jsx';
