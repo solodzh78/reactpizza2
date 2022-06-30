@@ -1,36 +1,33 @@
 import { FC, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
 import { PizzaBlock } from '../../components/PizzaBlock';
-import { fetchPizza } from '../../redux/slices/itemsSlice';
+import { fetchPizza, StatusEnum } from '../../redux/slices/itemsSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 
 // import styled from './Home.module.scss';
 
 export const PizzaFull: FC = () => {
-    console.log('render PizzaFull');
-	const { id } = useParams();
-	console.log('id: ', id);
-    const dispatch = useDispatch();
+	const id = useParams().id || '';
+    const dispatch = useAppDispatch();
 
-    const { items, status } = useSelector((state: any) => state.items);
+    const { items, status } = useAppSelector((state) => state.items);
     
     useEffect(() => {
-		// @ts-ignore
-		dispatch(fetchPizza(URL + '/'  + id));
+		if (id) dispatch(fetchPizza(URL + '/'  + id));
 		window.scrollTo(0, 0);
     }, [dispatch, id]);
     
 
     return (
         <>
-            <h2 className="content__title">{status === 'success' && items[0].title}</h2>
+            <h2 className="content__title">{status === StatusEnum.SUCCESS && items[0].title}</h2>
             <div className="content__items">
-                {status === 'loading'
+                {status === StatusEnum.LOADING
                     ? <PizzaSceleton className="pizza-block" />
-                    : status === 'success' 
+                    : status === StatusEnum.SUCCESS
                         ? <PizzaBlock {...items[0]} />
                         : <h2>Ошибка загрузки с сервера</h2>
                 }
@@ -38,5 +35,3 @@ export const PizzaFull: FC = () => {
         </>
     );
 }
-
-// export { PizzaFull };

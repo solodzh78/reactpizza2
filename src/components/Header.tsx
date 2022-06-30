@@ -1,12 +1,11 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { FC, PropsWithChildren } from 'react';
 import { Link } from 'react-router-dom';
 
 import pizzaLogo from '../assets/img/pizza-logo.svg'; 
-import { Search } from './Search';
+import { useAppSelector } from '../redux/typedHooks';
 
-export const Header: FC = () => {
-    const { totalPrice, totalCount} = useSelector((state: any) => state.cart);
+export const Header: FC<PropsWithChildren> = ({children}) => {
+    const { totalPrice, totalCount} = useAppSelector((state) => state.cart);
     return (
         <div className="header">
             <div className="container">
@@ -19,7 +18,7 @@ export const Header: FC = () => {
                         </div>
                     </div>
                 </Link>
-                <Search />
+                {children}
                 <div className="header__cart">
                     <Link className="button button--cart" to='cart'>
                         <span>{totalPrice} ₽</span>

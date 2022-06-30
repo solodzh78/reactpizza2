@@ -1,14 +1,15 @@
 import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { setActivePage } from '../../redux/slices/filterSlice';
 
 import styles from './Pagination.module.scss';
 
-export const Pagination: FC<{pages: number}> = ({ pages }) => {
+type PaginationPropsType = {
+	pages: number;
+	activePage: number;
+	setActivePage: (page: number) => void;
+};
 
-    const activePage = useSelector((state: any) => state.filter.activePage);
-    const dispatch = useDispatch();
+export const Pagination: FC<PaginationPropsType> = ({ pages, activePage, setActivePage }) => {
+
     const pagesArray = Array.from(Array(pages).keys());
     return (
         <div className={styles.root}>
@@ -16,7 +17,7 @@ export const Pagination: FC<{pages: number}> = ({ pages }) => {
 
                 <li 
                     className={styles['list-item']}
-                    onClick={() => {activePage - 1 >= 0 && dispatch(setActivePage(activePage - 1))}}
+                    onClick={() => {activePage - 1 >= 0 && (setActivePage(activePage - 1))}}
                 >
                     {'<'}
                 </li>
@@ -24,13 +25,13 @@ export const Pagination: FC<{pages: number}> = ({ pages }) => {
                     <li 
                         className={`${styles['list-item']}  ${index === activePage ? styles.active : ''}`}
                         key={index}
-                        onClick={() => dispatch(setActivePage(index))}
+                        onClick={() => (setActivePage(index))}
                     >
                         {item + 1}
                     </li>)}
                 <li 
                     className={styles['list-item']}
-                    onClick={() => {activePage + 1 <= pages - 1 && dispatch(setActivePage(activePage + 1))}}
+                    onClick={() => {activePage + 1 <= pages - 1 && (setActivePage(activePage + 1))}}
                 >
                     {'>'}
                 </li>

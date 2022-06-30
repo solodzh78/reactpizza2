@@ -1,21 +1,22 @@
-import { useCallback, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import debounce from 'lodash.debounce';
+import { ChangeEventHandler, useMemo, useRef, useState } from 'react';
 
 import styles from './Search.module.scss';
 import { setSearchValue } from '../../redux/slices/filterSlice';
+import { useAppDispatch } from '../../redux/typedHooks';
+import debounce from 'lodash.debounce';
 
 function Search() {
 
     const [localSearchValue, setLocalSearchValue] = useState('');
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const refInput = useRef<HTMLInputElement>(null);
-    const debonceChangeInputValue = useCallback(debounce((str: string) => dispatch(setSearchValue(str)), 1000), []);
+    const debonceChangeInputValue = useMemo(() => debounce((str: string) => dispatch(setSearchValue(str)), 1000), [dispatch]);
 
-    const onChangeHandler = (event: any) =>  {  
+    const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) =>  {  
         setLocalSearchValue(event.target.value);
         debonceChangeInputValue(localSearchValue)
-        };
+    };
+
     return (
         <div className={styles.root}>
             <svg

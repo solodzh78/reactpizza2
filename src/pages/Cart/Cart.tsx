@@ -1,17 +1,17 @@
 import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import emptyCart from '../../assets/img/empty-cart.png'
 import { CartItem } from '../../components/CartItem';
 import { clearCart } from '../../redux/slices/cartSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 
 import styles from './Cart.module.scss';
 
 const Cart: FC = () => {
-    const { cartItems, totalPrice, totalCount } = useSelector((state: any) => state.cart);
+    const { cartItems, totalPrice, totalCount } = useAppSelector((state) => state.cart);
     const isEmpty = cartItems.length === 0;
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const onClearCart = () => dispatch(clearCart());
     return (
         <>
@@ -54,7 +54,7 @@ const Cart: FC = () => {
                             </div>
                         </div>
                         <div className={styles.content__items}>
-                            {cartItems.map((item: any) => <CartItem key={item.uid} {...item}/>)}
+                            {cartItems.map((item) => <CartItem key={item.uid} {...item}/>)}
                         </div>
                         <div className="cart__bottom">
                             <div className="cart__bottom-details">

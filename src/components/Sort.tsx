@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { setActiveSortItem } from '../redux/slices/filterSlice';
+import { useAppDispatch, useAppSelector } from '../redux/typedHooks';
 
 export const sortList = [
     {
@@ -32,17 +32,18 @@ export const sortList = [
 	export const Sort: FC = () => {
 
     const sortRef = useRef(null);
-    const {activeSortItem} = useSelector((state: any) => state.filter);
-    const dispatch = useDispatch();
+    const {activeSortItem} = useAppSelector((state) => state.filter);
+    const dispatch = useAppDispatch();
 
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const onClickClose = (event: any) => {
-            if (!event.target.closest('.sort')) setOpen(false)
+        const onClickClose = (event: MouseEvent) => {
+			const target = event.target as Element;
+            if (!target.closest('.sort')) setOpen(false)
         };
+
         if (open) document.body.addEventListener('click', onClickClose) 
-        // else document.body.removeEventListener('click', onClickClose)
         return () => {
             document.body.removeEventListener('click', onClickClose)
         };

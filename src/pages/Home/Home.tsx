@@ -1,6 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
@@ -8,8 +7,9 @@ import { Categories } from '../../components/Categories';
 import { PizzaBlock } from '../../components/PizzaBlock';
 import { Sort, sortList } from '../../components/Sort';
 import { Pagination } from '../../components/Pagination';
-import { fetchItems } from '../../redux/slices/itemsSlice';
-import { setFilters } from '../../redux/slices/filterSlice';
+import { fetchItems, StatusEnum } from '../../redux/slices/itemsSlice';
+import { setActiveCategoryId, setActivePage, setFilters } from '../../redux/slices/filterSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 
 // import styled from './Home.module.scss';
 
@@ -17,15 +17,15 @@ const Home: FC = () => {
     console.log('render Home');
 
     const itemsPerPage = 3;
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const { items, status } = useSelector((state: any) => state.items);
+    const { items, status } = useAppSelector((state) => state.items);
     const { 
         activeCategoryId, 
         activeSortItem, 
         activePage, 
-        searchValue } = useSelector((state: any) => state.filter);
+        searchValue } = useAppSelector((state) => state.filter);
 
     const isSearch = useRef(false);
     const isFirstRender = useRef(true);
@@ -45,7 +45,7 @@ const Home: FC = () => {
             dispatch(setFilters(filters));
             isSearch.current = true;
         }
-    }, [])
+    }, [dispatch, searchParams])
     
     
     useEffect(() => {
@@ -54,20 +54,19 @@ const Home: FC = () => {
             const sortBy = `&sortBy=${activeSortItem.sortParameter.replace('-', '')}`;
             const order = `&order=${activeSortItem.sortParameter.includes('-') ? 'desc' : 'asc'}`;
             const search = `&search=${searchValue ? searchValue : ''}`;
-			// @ts-ignore
             dispatch(fetchItems(URL + searchParam + sortBy + order + search));
             window.scrollTo(0, 0);
         }
-    }, [activeCategoryId, activeSortItem, searchValue]);
+    }, [activeCategoryId, activeSortItem, dispatch, searchValue]);
     
     useEffect(() => {
         if (!isFirstRender.current) {
             setSearchParams({
-                sort: activeSortItem.sortParameter,
-                categoryId: activeCategoryId,
+				sort: activeSortItem.sortParameter,
+                categoryId: String(activeCategoryId),
                 search: searchValue,
-                page: activePage,
-            });
+                page: String(activePage)
+			});
         }
         isSearch.current = false;
         isFirstRender.current = false;
@@ -75,32 +74,35 @@ const Home: FC = () => {
 
     const pages = Math.ceil(items.length / itemsPerPage);
 
+	const onChangeCategory = (index: number) => {
+		dispatch(setActiveCategoryId(index))
+	};
+
     return (
         <>
             <div className="content__top">
-                <Categories />
+                <Categories activeCategoryId={activeCategoryId} onChangeCategory={onChangeCategory}/>
                 <Sort />
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
-                {status === 'loading'
+                {status === StatusEnum.LOADING
                     ? [...Array(6)].map((_, index) => (
                         <PizzaSceleton key={index} className="pizza-block" />
                     ))
-                    : status === 'success' 
+                    : status === StatusEnum.SUCCESS
                         ? items
-                            .filter((item: any, index: number) => 
+                            .filter((item, index) => 
                                 index >= activePage * itemsPerPage && index < (activePage + 1) * itemsPerPage)
-                            .map((pizza: any) => 
-                                <Link key={pizza.id} to={`/pizza/${pizza.id}`}>
-									<PizzaBlock {...pizza} />
-								</Link>
-                            )
+                            .map((pizza) => 
+								<PizzaBlock key={pizza.id} {...pizza} />)
                         : <h2>Ошибка загрузки с сервера</h2>
                 }
             </div>
             <Pagination 
                 pages={pages}
+				activePage={activePage}
+				setActivePage={(page: number) => dispatch(setActivePage(page))}
             />
         </>
     );

@@ -1,13 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from './../store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 
+type CartItemType = {
+	id: string; 
+	uid: string; 
+	title: string;
+	imageUrl: string;
+	price: number;
+	type: string;
+	size: number;
+	count: number;
+};
+
 const initialState = {
-    cartItems: [],
+    cartItems: [] as CartItemType[],
     totalPrice: 0,
     totalCount: 0,
 };
 
-const total = (state) => {
+const total = (state: typeof initialState) => {
     state.totalPrice = state.cartItems.reduce((akk, item) => {
         return akk + item.price * item.count
     }, 0);
@@ -20,7 +32,7 @@ export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart: (state, {payload}) => {
+        addToCart: (state, {payload}: PayloadAction<CartItemType>) => {
             const existingItem = state.cartItems.find(item => 
                 item.id === payload.id && item.size === payload.size && item.type === payload.type);
                 existingItem 
@@ -28,16 +40,16 @@ export const cartSlice = createSlice({
                 :   state.cartItems.push({...payload, uid: nanoid(), count: 1});
             total(state);
         },
-        removeFromCart: (state, {payload}) => {
+        removeFromCart: (state, {payload}: PayloadAction<string>) => {
             state.cartItems = state.cartItems.filter(item => item.uid !== payload)
             total(state);
         },
-        incrItemCount: (state, {payload}) => {
+        incrItemCount: (state, {payload}: PayloadAction<string>) => {
             const findedItem = state.cartItems.find(item => item.uid === payload);
             if (findedItem) findedItem.count++;
             total(state);
         },
-        decrItemCount: (state, {payload}) => {
+        decrItemCount: (state, {payload}: PayloadAction<string>) => {
             const findedItem = state.cartItems.find(item => item.uid === payload);
             if (findedItem && findedItem.count > 1) findedItem.count--;
             total(state);
@@ -47,7 +59,11 @@ export const cartSlice = createSlice({
             total(state);
         },
     }
-})
+});
+
+export const uidSelector = (state: RootState) => state.cart.cartItems.map(item => item.uid);
+
+
 
 // Action creators are generated for each case reducer function
 export const { 

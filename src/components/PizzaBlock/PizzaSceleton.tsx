@@ -1,4 +1,4 @@
-import React, { Attributes, FC, HTMLAttributes, PropsWithChildren } from 'react';
+import { FC } from 'react';
 import ContentLoader from 'react-content-loader';
 
 export const PizzaSceleton: FC<{className?: string}> = (props) => (
