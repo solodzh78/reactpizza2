@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, FC } from 'react';
+import { useRef, useState, FC } from 'react';
 
+import { useOutsideClick } from '../hooks/useOutsideClick';
 import { setActiveSortItem } from '../redux/slices/filterSlice';
 import { useAppDispatch, useAppSelector } from '../redux/typedHooks';
 
@@ -37,17 +38,7 @@ export const sortList = [
 
     const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        const onClickClose = (event: MouseEvent) => {
-			const target = event.target as Element;
-            if (!target.closest('.sort')) setOpen(false)
-        };
-
-        if (open) document.body.addEventListener('click', onClickClose) 
-        return () => {
-            document.body.removeEventListener('click', onClickClose)
-        };
-    }, [open]);
+	useOutsideClick(sortRef, () => setOpen(false), open);
 
     const sortItemClickHandler = (index: number) => {
         dispatch(setActiveSortItem(sortList[index]));

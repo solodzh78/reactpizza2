@@ -1,20 +1,27 @@
-import { ChangeEventHandler, useMemo, useRef, useState } from 'react';
+import { ChangeEventHandler, useMemo, useRef } from 'react';
 
 import styles from './Search.module.scss';
 import { setSearchValue } from '../../redux/slices/filterSlice';
-import { useAppDispatch } from '../../redux/typedHooks';
+import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 import debounce from 'lodash.debounce';
+import { useIsMounted } from '../../hooks/useIsMounted';
 
 function Search() {
 
-    const [localSearchValue, setLocalSearchValue] = useState('');
+	const {searchValue} = useAppSelector(state => state.filter);
+	const isMounted = useIsMounted;
+	const refInput = useRef<HTMLInputElement>(null);
+
+	if (!isMounted && refInput.current) refInput.current.value = searchValue;
+
     const dispatch = useAppDispatch();
-    const refInput = useRef<HTMLInputElement>(null);
-    const debonceChangeInputValue = useMemo(() => debounce((str: string) => dispatch(setSearchValue(str)), 1000), [dispatch]);
+    const debonceChangeInputValue = useMemo(
+		() => debounce((str: string) => dispatch(setSearchValue(str)), 1000), 
+		[dispatch]);
 
     const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) =>  {  
-        setLocalSearchValue(event.target.value);
-        debonceChangeInputValue(localSearchValue)
+		const {value} = event.target;
+        debonceChangeInputValue(value);
     };
 
     return (
@@ -33,9 +40,9 @@ function Search() {
                 className={styles.input} 
                 ref={refInput}
                 placeholder='Поиск пиццы ...' 
-                value={localSearchValue}
+                // value={localSearchValue}
                 onChange={onChangeHandler} />
-            {localSearchValue && 
+            {searchValue && 
             <svg 
                 className={styles.clear} 
                 height="48" 
@@ -44,8 +51,9 @@ function Search() {
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={() => {
                     dispatch(setSearchValue(''));
-                    setLocalSearchValue('');
+                    // setLocalSearchValue('');
                     refInput.current?.focus();
+                    if (refInput.current)refInput.current.value = '';
                 }}
             >
                 <path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/>

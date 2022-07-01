@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 
 const categories = [
 	'Все',
@@ -14,7 +14,7 @@ type onChangeCategory = {
 	onChangeCategory: (index: number) => void;
 };
 
-export const Categories: FC<onChangeCategory> = ({ activeCategoryId, onChangeCategory }) => {
+export const Categories1: FC<onChangeCategory> = ({ activeCategoryId, onChangeCategory }) => {
     return (
         <div className="categories">
             <ul>
@@ -35,3 +35,4 @@ export const Categories: FC<onChangeCategory> = ({ activeCategoryId, onChangeCat
     );
 };
 
+export const Categories = memo(Categories1);
