@@ -1,49 +1,28 @@
-import { useRef, useState, FC } from 'react';
+import { useRef, useState, FC, memo, useCallback } from 'react';
+import { useWhyDidYouUpdate } from 'ahooks'
 
 import { useOutsideClick } from '../hooks/useOutsideClick';
-import { setActiveSortItem } from '../redux/slices/filterSlice';
+import { setActiveSortItem, sortList } from '../redux/slices/filterSlice';
 import { useAppDispatch, useAppSelector } from '../redux/typedHooks';
 
-export const sortList = [
-    {
-        title: 'популярности DESC',
-        sortParameter: '-rating'
-    }, 
-    {
-        title: 'популярности ASC',
-        sortParameter: 'rating'
-    }, 
-    {
-        title: 'цене DESC',
-        sortParameter: '-price'
-    }, 
-    {
-        title: 'цене ASC',
-        sortParameter: 'price'
-    }, 
-    {
-        title: 'алфавиту DESC',
-        sortParameter: '-title'
-    },
-    {
-        title: 'алфавиту ASC',
-        sortParameter: 'title'
-    }];
-
-	export const Sort: FC = () => {
-
+const Sort1: FC = () => {
+	
+	console.log('Render Sort');
+	
     const sortRef = useRef(null);
-    const {activeSortItem} = useAppSelector((state) => state.filter);
+    const activeSortItem = useAppSelector((state) => state.filter.activeSortItem);
     const dispatch = useAppDispatch();
-
+	
     const [open, setOpen] = useState(false);
-
+	
 	useOutsideClick(sortRef, () => setOpen(false), open);
+	
+    const sortItemClickHandler = useCallback((index: number) => {
+		dispatch(setActiveSortItem(sortList[index]));
+        setOpen(false)
+    }, [dispatch]);
 
-    const sortItemClickHandler = (index: number) => {
-        dispatch(setActiveSortItem(sortList[index]));
-        setOpen(false);
-    };
+	useWhyDidYouUpdate("Sort1", {activeSortItem, open, dispatch, sortItemClickHandler, useOutsideClick, sortRef, sortList});
 
     return (
         <div className="sort" ref={sortRef}>
@@ -86,3 +65,5 @@ export const sortList = [
         </div>
     );
 };
+
+export const Sort = memo(Sort1);

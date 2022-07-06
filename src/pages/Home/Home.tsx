@@ -1,14 +1,16 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useWhyDidYouUpdate } from 'ahooks'
+
 
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
 import { Categories } from '../../components/Categories';
 import { PizzaBlock } from '../../components/PizzaBlock';
-import { Sort, sortList } from '../../components/Sort';
+import { Sort } from '../../components/Sort';
 import { Pagination } from '../../components/Pagination';
 import { fetchItems, StatusEnum } from '../../redux/slices/itemsSlice';
-import { setActiveCategoryId, setActivePage, setFilters } from '../../redux/slices/filterSlice';
+import { setActiveCategoryId, setActivePage, setFilters, sortList } from '../../redux/slices/filterSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 
 // import styled from './Home.module.scss';
@@ -30,11 +32,11 @@ const Home: FC = () => {
     const isSearch = useRef(false);
     const isFirstRender = useRef(true);
 
-    const sortToObj = (str: string) => {
+    const sortToObj = useCallback((str: string) => {
         return sortList.find(elem => elem.sortParameter === str) || sortList[0]
-    };
+    }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isFirstRender.current && searchParams.toString()) {
             const filters = {
                 sort: sortToObj(String(searchParams.get('sort'))),
@@ -45,7 +47,7 @@ const Home: FC = () => {
             dispatch(setFilters(filters));
             isSearch.current = true;
         }
-    }, [dispatch, searchParams])
+    }, [dispatch, searchParams, sortToObj])
     
     
     useEffect(() => {
@@ -74,9 +76,23 @@ const Home: FC = () => {
 
     const pages = Math.ceil(items.length / itemsPerPage);
 
-	const onChangeCategory = (index: number) => {
-		dispatch(setActiveCategoryId(index))
-	};
+	const onChangeCategory = useCallback((index: number) => {
+		dispatch(setActiveCategoryId(index));
+	}, [dispatch]);
+
+	useWhyDidYouUpdate("Home", {
+		searchParams, 
+		items, 
+		status, 
+		activeCategoryId, 
+        activeSortItem, 
+        activePage, 
+        searchValue, 
+		pages,
+		sortToObj,
+		setSearchParams,
+		dispatch });
+
 
     return (
         <>

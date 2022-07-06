@@ -9,12 +9,13 @@ const categories = [
 	'Закрытые'
 ];
 
-type onChangeCategory = {
+type CategoriesPropsType = {
 	activeCategoryId: number;
 	onChangeCategory: (index: number) => void;
 };
 
-export const Categories1: FC<onChangeCategory> = ({ activeCategoryId, onChangeCategory }) => {
+export const Categories1: FC<CategoriesPropsType> = ({ activeCategoryId, onChangeCategory }) => {
+	console.log('Render Categories');
     return (
         <div className="categories">
             <ul>

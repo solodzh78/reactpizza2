@@ -1,27 +1,32 @@
-import { ChangeEventHandler, useMemo, useRef } from 'react';
+import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import debounce from 'lodash.debounce';
 
 import styles from './Search.module.scss';
 import { setSearchValue } from '../../redux/slices/filterSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
-import debounce from 'lodash.debounce';
-import { useIsMounted } from '../../hooks/useIsMounted';
+import { useIsFirstRenderEffect } from '../../hooks/useIsFirstRenderEffect';
 
 function Search() {
 
-	const {searchValue} = useAppSelector(state => state.filter);
-	const isMounted = useIsMounted;
+	console.log('Render Search');
+	const searchValue = useAppSelector(state => state.filter.searchValue);
+	const [localSearchValue, setLocalSearchValue] = useState('');
 	const refInput = useRef<HTMLInputElement>(null);
-
-	if (!isMounted && refInput.current) refInput.current.value = searchValue;
-
+	useIsFirstRenderEffect(() => {if (refInput.current) refInput.current.value = searchValue}, [searchValue]);
+	
     const dispatch = useAppDispatch();
-    const debonceChangeInputValue = useMemo(
-		() => debounce((str: string) => dispatch(setSearchValue(str)), 1000), 
-		[dispatch]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debonceChangeInputValue = useCallback(debounce((str: string) => {dispatch(setSearchValue(str))}, 1000), []);
+
+	useEffect(() => {debonceChangeInputValue(localSearchValue)}, [debonceChangeInputValue, dispatch, localSearchValue]);
+	// useDebounceEffect(() => {dispatch(setSearchValue(localSearchValue))}, 
+	// 	[localSearchValue], {wait: 2000,}
+	// );
 
     const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) =>  {  
-		const {value} = event.target;
-        debonceChangeInputValue(value);
+		const value = event.target.value;
+        setLocalSearchValue(value)
     };
 
     return (
@@ -40,7 +45,7 @@ function Search() {
                 className={styles.input} 
                 ref={refInput}
                 placeholder='Поиск пиццы ...' 
-                // value={localSearchValue}
+                value={localSearchValue}
                 onChange={onChangeHandler} />
             {searchValue && 
             <svg 
@@ -51,9 +56,8 @@ function Search() {
                 xmlns="http://www.w3.org/2000/svg"
                 onClick={() => {
                     dispatch(setSearchValue(''));
-                    // setLocalSearchValue('');
+                    setLocalSearchValue('');
                     refInput.current?.focus();
-                    if (refInput.current)refInput.current.value = '';
                 }}
             >
                 <path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/>

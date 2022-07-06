@@ -56,7 +56,7 @@ export const itemsSlice = createSlice({
         builder
             .addCase(fetchItems.pending, (state) => {
                 state.status = StatusEnum.LOADING;
-				state.items = [];
+				// state.items = [];
             })
             .addCase(fetchItems.fulfilled, (state, { payload }) => {
                 state.status = StatusEnum.SUCCESS;
