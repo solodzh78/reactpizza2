@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useWhyDidYouUpdate } from 'ahooks'
+import { useWhyDidYouUpdate } from 'ahooks';
 
 
 import { URL } from '../../assets/url';

@@ -2,7 +2,7 @@ import { RootState } from './../store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 
-type CartItemType = {
+export type CartItemType = {
 	id: string; 
 	uid: string; 
 	title: string;
@@ -14,19 +14,8 @@ type CartItemType = {
 };
 
 const initialState = {
-    cartItems: [] as CartItemType[],
-    totalPrice: 0,
-    totalCount: 0,
+    cartItems: [] as CartItemType[]
 };
-
-const total = (state: typeof initialState) => {
-    state.totalPrice = state.cartItems.reduce((akk, item) => {
-        return akk + item.price * item.count
-    }, 0);
-    state.totalCount = state.cartItems.reduce((akk, item) => {
-        return akk + item.count
-    }, 0);
-}
 
 export const cartSlice = createSlice({
     name: 'cart',
@@ -38,32 +27,28 @@ export const cartSlice = createSlice({
                 existingItem 
                 ?   existingItem.count++
                 :   state.cartItems.push({...payload, uid: nanoid(), count: 1});
-            total(state);
         },
         removeFromCart: (state, {payload}: PayloadAction<string>) => {
             state.cartItems = state.cartItems.filter(item => item.uid !== payload)
-            total(state);
         },
         incrItemCount: (state, {payload}: PayloadAction<string>) => {
             const findedItem = state.cartItems.find(item => item.uid === payload);
             if (findedItem) findedItem.count++;
-            total(state);
         },
         decrItemCount: (state, {payload}: PayloadAction<string>) => {
             const findedItem = state.cartItems.find(item => item.uid === payload);
             if (findedItem && findedItem.count > 1) findedItem.count--;
-            total(state);
         },
         clearCart: (state) => {
             state.cartItems = [];
-            total(state);
+        },
+        setCart: (state, {payload}: PayloadAction<CartItemType[]>) => {
+            state.cartItems = payload;
         },
     }
 });
 
 export const uidSelector = (state: RootState) => state.cart.cartItems.map(item => item.uid);
-
-
 
 // Action creators are generated for each case reducer function
 export const { 
@@ -71,6 +56,7 @@ export const {
     removeFromCart,
     incrItemCount,
     decrItemCount,
-    clearCart } = cartSlice.actions;
+    clearCart,
+    setCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
