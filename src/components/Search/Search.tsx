@@ -2,7 +2,7 @@ import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from 're
 import debounce from 'lodash.debounce';
 
 import styles from './Search.module.scss';
-import { setSearchValue } from '../../redux/slices/filterSlice';
+import { setSearchValue } from '../../redux/filter/slice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 import { useIsFirstRenderEffect } from '../../hooks/useIsFirstRenderEffect';
 
@@ -16,13 +16,11 @@ function Search() {
 	
     const dispatch = useAppDispatch();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const debonceChangeInputValue = useCallback(debounce((str: string) => {dispatch(setSearchValue(str))}, 1000), []);
 
-	useEffect(() => {debonceChangeInputValue(localSearchValue)}, [debonceChangeInputValue, dispatch, localSearchValue]);
-	// useDebounceEffect(() => {dispatch(setSearchValue(localSearchValue))}, 
-	// 	[localSearchValue], {wait: 2000,}
-	// );
+	useEffect(() => {
+        debonceChangeInputValue(localSearchValue)
+    }, [debonceChangeInputValue, dispatch, localSearchValue]);
 
     const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) =>  {  
 		const value = event.target.value;

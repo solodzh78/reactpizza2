@@ -1,6 +1,6 @@
 import { FC, memo } from 'react';
 
-import { decrItemCount, incrItemCount, removeFromCart } from '../../redux/slices/cartSlice';
+import { decrItemCount, incrItemCount, removeFromCart } from '../../redux/cart/slice';
 import { useAppDispatch } from '../../redux/typedHooks';
 
 // import styles from './CartItem.module.scss';

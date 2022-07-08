@@ -1,17 +1,6 @@
-import { RootState } from './../store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
-
-export type CartItemType = {
-	id: string; 
-	uid: string; 
-	title: string;
-	imageUrl: string;
-	price: number;
-	type: string;
-	size: number;
-	count: number;
-};
+import { CartItemType } from './types';
 
 const initialState = {
     cartItems: [] as CartItemType[]
@@ -47,8 +36,6 @@ export const cartSlice = createSlice({
         },
     }
 });
-
-export const uidSelector = (state: RootState) => state.cart.cartItems.map(item => item.uid);
 
 // Action creators are generated for each case reducer function
 export const { 

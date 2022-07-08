@@ -2,7 +2,7 @@ import { FC, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import pizzaLogo from '../assets/img/pizza-logo.svg'; 
-import { setCart } from '../redux/slices/cartSlice';
+import { setCart } from '../redux/cart/slice';
 import { useAppDispatch, useAppSelector } from '../redux/typedHooks';
 import { Search } from './Search';
 import { calcCartTotal } from './utils/calcCartTotal';
@@ -25,7 +25,7 @@ const HeaderButton: FC = () => {
             return;
         }
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    }, [cartItems]);
+    }, [cartItems, dispatch]);
 
     return(
         <div className="header__cart">

@@ -4,8 +4,10 @@ import { useParams } from 'react-router-dom';
 import { URL } from '../../assets/url';
 import { PizzaSceleton } from '../../components/PizzaBlock/PizzaSceleton';
 import { PizzaBlock } from '../../components/PizzaBlock';
-import { fetchPizza, StatusEnum } from '../../redux/slices/itemsSlice';
+import { fetchPizza } from '../../redux/item/slice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
+import { StatusEnum } from '../../redux/item/types';
+import { itemSelector } from '../../redux/item/selectors';
 
 // import styled from './Home.module.scss';
 
@@ -13,7 +15,7 @@ export const PizzaFull: FC = () => {
 	const id = useParams().id || '';
     const dispatch = useAppDispatch();
 
-    const { items, status } = useAppSelector((state) => state.items);
+    const { items, status } = useAppSelector(itemSelector);
     
     useEffect(() => {
 		if (id) dispatch(fetchPizza(URL + '/'  + id));

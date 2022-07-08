@@ -1,16 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { ItemType, StatusEnum } from './types';
 
-type ItemType = {
-	id: string;
-	imageUrl: string;
-	title: string;
-	types: number[];
-	sizes: number[];
-	price: number;
-	category: number;
-	rating: number;
-};
 
 export const fetchItems = createAsyncThunk<ItemType[], string>(
     "items/fetchItems",
@@ -37,11 +28,7 @@ export const fetchPizza = createAsyncThunk<ItemType, string>(
     }
 );
 
-export enum StatusEnum {
-	LOADING = 'loading',
-	SUCCESS = 'success',
-	ERROR = 'error',
-};
+
 
 const initialState = {
     items: [] as ItemType[],

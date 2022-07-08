@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { addToCart } from "../../redux/slices/cartSlice";
+import { addToCart } from "../../redux/cart/slice";
 import { useAppDispatch, useAppSelector } from "../../redux/typedHooks";
 const pizzaType = ['тонкое', 'традиционное'];
 
@@ -95,7 +95,7 @@ export const PizzaBlock: FC<PizzaBlockProps> = (props) => {
                         />
                     </svg>
                     <span>Добавить</span>
-                    <i>{count}</i>
+                    {count > 0 && <i>{count}</i>}
                 </div>
             </div>
         </div>

@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import emptyCart from '../../assets/img/empty-cart.png'
 import { CartItem } from '../../components/CartItem';
 import { calcCartTotal } from '../../components/utils/calcCartTotal';
-import { clearCart } from '../../redux/slices/cartSlice';
+import { cartSelector } from '../../redux/cart/selectors';
+import { clearCart } from '../../redux/cart/slice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
 
 import styles from './Cart.module.scss';
 
-const Cart: FC = () => {
-    const { cartItems } = useAppSelector((state) => state.cart);
+export const Cart: FC = () => {
+    const { cartItems } = useAppSelector(cartSelector);
     const { totalPrice, totalCount } = calcCartTotal(cartItems);
     const isEmpty = cartItems.length === 0;
     const dispatch = useAppDispatch();
@@ -83,5 +84,3 @@ const Cart: FC = () => {
         </>
     );
 }
-
-export { Cart };

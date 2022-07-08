@@ -2,8 +2,9 @@ import { useRef, useState, FC, memo, useCallback } from 'react';
 import { useWhyDidYouUpdate } from 'ahooks'
 
 import { useOutsideClick } from '../hooks/useOutsideClick';
-import { setActiveSortItem, sortList } from '../redux/slices/filterSlice';
+import { setActiveSortItem } from '../redux/filter/slice';
 import { useAppDispatch, useAppSelector } from '../redux/typedHooks';
+import { SORT_LIST } from '../redux/filter/constants';
 
 const Sort1: FC = () => {
 	
@@ -18,11 +19,11 @@ const Sort1: FC = () => {
 	useOutsideClick(sortRef, () => setOpen(false), open);
 	
     const sortItemClickHandler = useCallback((index: number) => {
-		dispatch(setActiveSortItem(sortList[index]));
+		dispatch(setActiveSortItem(SORT_LIST[index]));
         setOpen(false)
     }, [dispatch]);
 
-	useWhyDidYouUpdate("Sort1", {activeSortItem, open, dispatch, sortItemClickHandler, useOutsideClick, sortRef, sortList});
+	useWhyDidYouUpdate("Sort1", {activeSortItem, open, dispatch, sortItemClickHandler, useOutsideClick, sortRef});
 
     return (
         <div className="sort" ref={sortRef}>
@@ -48,7 +49,7 @@ const Sort1: FC = () => {
             {open && (
                 <div className="sort__popup">
                     <ul>
-                        {sortList.map(({title, sortParameter}, index) => {
+                        {SORT_LIST.map(({title, sortParameter}, index) => {
                             const className = sortParameter === activeSortItem.sortParameter ? 'active' : '';
                             return (
                                 <li

@@ -9,9 +9,13 @@ import { Categories } from '../../components/Categories';
 import { PizzaBlock } from '../../components/PizzaBlock';
 import { Sort } from '../../components/Sort';
 import { Pagination } from '../../components/Pagination';
-import { fetchItems, StatusEnum } from '../../redux/slices/itemsSlice';
-import { setActiveCategoryId, setActivePage, setFilters, sortList } from '../../redux/slices/filterSlice';
+import { StatusEnum } from '../../redux/item/types';
+import { setActiveCategoryId, setActivePage, setFilters } from '../../redux/filter/slice';
 import { useAppDispatch, useAppSelector } from '../../redux/typedHooks';
+import { SORT_LIST } from '../../redux/filter/constants';
+import { fetchItems } from '../../redux/item/slice';
+import { filtersSelector } from '../../redux/filter/selectors';
+import { itemSelector } from '../../redux/item/selectors';
 
 // import styled from './Home.module.scss';
 
@@ -22,18 +26,18 @@ const Home: FC = () => {
     const dispatch = useAppDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const { items, status } = useAppSelector((state) => state.items);
+    const { items, status } = useAppSelector(itemSelector);
     const { 
         activeCategoryId, 
         activeSortItem, 
         activePage, 
-        searchValue } = useAppSelector((state) => state.filter);
+        searchValue } = useAppSelector(filtersSelector);
 
     const isSearch = useRef(false);
     const isFirstRender = useRef(true);
 
     const sortToObj = useCallback((str: string) => {
-        return sortList.find(elem => elem.sortParameter === str) || sortList[0]
+        return SORT_LIST.find(elem => elem.sortParameter === str) || SORT_LIST[0]
     }, []);
 
     useLayoutEffect(() => {
